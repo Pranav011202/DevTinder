@@ -1,0 +1,19 @@
+{
+  "name": "devtinder1",
+  "version": "1.0.0",
+  "description": "tinder for devs",
+  "main": "index.js",
+  "scripts": {
+    "start" : "nodemon src/app.js",
+    "dev" : "nodemon src/app.js"
+  },
+  "keywords": [
+    "node.js",
+    "javascript"
+  ],
+  "author": "Pranav Saluja",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
