@@ -1,26 +1,73 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const validator = require("validator");
 
-const userSchema = new mongoose.Schema({
-    firstName : {
-        type : String
+const userSchema = new mongoose.Schema(
+    {
+        firstName: {
+            type: String,
+            required: true,
+            minlength: 4,
+            maxlength: 50,
+        },
+        lastName: {
+            type: String,
+        },
+        emailId: {
+            type: String,
+            lowercase: true,
+            required: [true, "Email is required"],
+            unique: true,
+            trim: true,
+            validate: {
+                validator: validator.isEmail,
+                message: (props) => `${props.value} is not a valid email address`,
+            },
+        },
+        password: {
+            type: String,
+            required: true,
+            validate(value) {
+                if(!validator.isStrongPassword(value)){
+                    throw new Error("Enter a Strong Password: " + value);
+                }
+            },
+        },
+        age: {
+            type: Number,
+            min: 18,
+        },
+        gender: {
+            type: String,
+            validate(value) {
+                const allowedGenders = ["male", "female", "others"];
+                if (value && !allowedGenders.includes(value)) {
+                    throw new Error("Gender data is not valid");
+                }
+            },
+        },
+        photoUrl: {
+            type: String,
+            default: "https://www.pnrao.com/wp-content/uploads/2023/06/dummy-user-male.jpg",
+            validate(value) {
+                if(!validator.isURL(value)){
+                    throw new Error("Invalid Photo URL: " + value);
+                }
+            },
+        },
+        about: {
+            type: String,
+            default: "This is the default about of the user",
+        },
+        skills: {
+            type: [String],
+            default: [], // Default to an empty array
+        },
     },
-    lastName : {
-        type : String
-    },
-    emailId: {
-        type : String
-    },
-    password: {
-        type : String
-    },
-    age: {
-        type : Number
-    },
-    gender: {
-        type : String
+    {
+        timestamps: true, // Adds `createdAt` and `updatedAt` fields automatically
     }
-});
+);
 
-const User = mongoose.model("User",userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
